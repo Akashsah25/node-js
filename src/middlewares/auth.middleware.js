@@ -10,7 +10,7 @@ const verifyJWT = asyncHandler(async (req, resp, next) => {
       req.header("Authorization")?.replace("Bearer ", "");
 
     if (!Token) {
-      resp.status(400).json(new ApiError(400, "Unauthorized request"));
+      return resp.status(401).json(new ApiError(401, "Unauthorized request"));
     }
     const decodedToken = jwt.verify(Token, process.env.ACCESS_TOKEN_SECRET);
     const User = await user
@@ -18,12 +18,12 @@ const verifyJWT = asyncHandler(async (req, resp, next) => {
       .select("-password -refreshToken");
 
     if (!User) {
-      resp.status(400).json(new ApiError(400, "invalied access token"));
+      return resp.status(401).json(new ApiError(401, "Invalid access token"));
     }
     req.user = User;
     next();
   } catch (error) {
-    throw new ApiError(400, error.message || "invalid access token");
+    throw new ApiError(401, error.message || "Invalid access token");
   }
 });
 export default verifyJWT;

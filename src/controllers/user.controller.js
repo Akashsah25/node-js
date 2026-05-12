@@ -45,32 +45,21 @@ const registerUser = asyncHandler(async (req, resp) => {
 
   // ! avatar and coverimage localpath
 
-  console.log("FILES:", req.files);
-
   const avatarLocalpath = req.files?.avatar?.[0]?.path;
   const coverImageLocalpath = req.files?.coverImage?.[0]?.path;
-  if (!avatarLocalpath) {
-    return resp.status(400).json(new ApiError(400, "Avatar is required"));
-  }
 
   // ! cloudinary upload
 
-  const avatar = await uploadCloudinary(avatarLocalpath);
+  const avatar = avatarLocalpath ? await uploadCloudinary(avatarLocalpath) : null;
   const coverImage = coverImageLocalpath
     ? await uploadCloudinary(coverImageLocalpath)
     : null;
-
-  // ! avatar requirement
-
-  if (!avatar) {
-    return resp.status(400).json(new ApiError(400, "Avatar is required"));
-  }
 
   // ! create user in DB
 
   const NewUser = await user.create({
     fullName,
-    avatar: avatar?.url,
+    avatar: avatar?.url || "",
     coverImage: coverImage?.url || "",
     email,
     password,
@@ -129,7 +118,8 @@ const logInUser = asyncHandler(async (req, resp) => {
     .select("-password -refreshToken");
   const Option = {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
   };
   return resp
     .status(200)
@@ -149,18 +139,19 @@ const logInUser = asyncHandler(async (req, resp) => {
 const logOutUser = asyncHandler(async (req, resp) => {
   await user.findByIdAndUpdate(
     req.user._id,
-    { $set: { refreshToken: undefind } },
+    { $set: { refreshToken: undefined } },
     { new: true }
   );
   const Option = {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
   };
   return resp
     .status(200)
-    .clearcookie("accessToken", accessToken, Option)
-    .clearcookie("refreshToken", refreshToken, Option)
-    .json(new Apiresponse(200, "logout succesfully"));
+    .clearCookie("accessToken", Option)
+    .clearCookie("refreshToken", Option)
+    .json(new Apiresponse(200, null, "logout succesfully"));
 });
 
 export { registerUser, logInUser, logOutUser };

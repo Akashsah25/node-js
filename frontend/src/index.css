@@ -1,0 +1,49 @@
+:root {
+  --bg0: #070a12;
+  --bg1: #0b1022;
+  --card: rgba(255, 255, 255, 0.06);
+  --card2: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.12);
+  --text: rgba(255, 255, 255, 0.88);
+  --muted: rgba(255, 255, 255, 0.62);
+  --shadow: rgba(0, 0, 0, 0.45);
+
+  --primaryA: #6d28d9;
+  --primaryB: #ec4899;
+  --primaryC: #22c55e;
+
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  background: radial-gradient(1200px 800px at 20% 10%, #1b1e42 0%, transparent 60%),
+    radial-gradient(900px 700px at 80% 20%, #35114a 0%, transparent 55%),
+    radial-gradient(900px 700px at 50% 100%, #0f3a2f 0%, transparent 55%),
+    linear-gradient(180deg, var(--bg0) 0%, var(--bg1) 100%);
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+}
+
+input,
+button {
+  font: inherit;
+}
